@@ -1,23 +1,9 @@
 FROM debian:bookworm AS build
 
-# Install WINE build dependencies
-RUN sed -i 's/^Types: deb$/Types: deb deb-src/' /etc/apt/sources.list.d/debian.sources
+# Install WINE
 RUN apt update && \
-    DEBIAN_FRONTEND="noninteractive" apt-get build-dep --install-recommends -y wine && \
-    # debian does not pull in i686 mingw (needed for building "experimental wow64" support)
-    DEBIAN_FRONTEND="noninteractive" apt-get install -y gcc-mingw-w64-i686 && \
-    DEBIAN_FRONTEND="noninteractive" apt-get install -y git && \
-    rm -rf /var/lib/apt/lists/*
-
-# Build and install patched WINE (see https://github.com/msys2/MSYS2-packages/issues/682)
-RUN git clone --filter=tree:0 https://gitlab.winehq.org/jhol/wine.git /tmp/winesrc && \
-    cd /tmp/winesrc && \
-    # https://gitlab.winehq.org/jhol/wine/-/commits/msys2-hacks-19
-    git checkout f4ee66ef58d4e4b66ea3b11328d1bd2dda3da927 && \
-    ./configure --disable-tests --enable-win64 --with-mingw --enable-archs=x86_64,i386 && \
-    make -j $(nproc) && \
-    env DESTDIR=/wine make -j $(nproc) install && \
-    rm -rf /tmp/winesrc && \
-    # Clean things up
-    find /wine -type f -exec strip --strip-all {} \; && \
-    rm -Rf /wine/usr/local/include
+    DEBIAN_FRONTEND="noninteractive" apt install -y wget && \
+    wget https://github.com/wsxarcher/hangover-msys2/releases/download/hangover-10.0-msys2/hangover_10.0-msys2_debian12_bookworm_arm64.tar -O hangover.tar && \
+    tar -xf *.tar && \
+    DEBIAN_FRONTEND="noninteractive" apt install -y ./*.deb && \
+    rm -rf *.tar *.deb

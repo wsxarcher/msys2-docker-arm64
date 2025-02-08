@@ -11,7 +11,7 @@ use.
 Simply run the image to get a shell:
 
 ```console
-$ docker run -it ghcr.io/msys2/msys2-docker-experimental
+$ docker run -it ghcr.io/wsxarcher/msys2-docker-experimental
 D406664E7A3F+root@d406664e7a3f UCRT64 ~
 # uname -a
 MINGW64_NT-10.0-19043 d406664e7a3f 3.4.10.x86_64 2024-04-08 18:11 UTC x86_64 Msys
@@ -22,7 +22,7 @@ It defaults to the `UCRT64` environment. Pass `-eMSYSTEM=CLANG64` etc to change 
 Or alternatively use the included `msys2` command which runs bash:
 
 ```console
-$ docker run -it ghcr.io/msys2/msys2-docker-experimental msys2 -c "uname -a"
+$ docker run -it ghcr.io/wsxarcher/msys2-docker-experimental msys2 -c "uname -a"
 MINGW64_NT-10.0-19043 51eee8aa4763 3.4.10.x86_64 2024-04-08 18:11 UTC x86_64 Msys
 ```
 

@@ -1,25 +1,19 @@
-FROM ghcr.io/msys2/msys2-docker-build-base AS build
+FROM ghcr.io/wsxarcher/msys2-docker-build-base AS build
 
 # Install MSYS2
 RUN apt update && apt install -y zstd curl
-RUN mkdir -p /tmp/msys64
 RUN curl --fail -L 'https://github.com/msys2/msys2-installer/releases/download/nightly-x86_64/msys2-base-x86_64-latest.tar.zst' | tar -x --zstd -C  /tmp/
-
-FROM debian:bookworm
 
 # Copy over wine and install the runtime deps
 RUN apt update \
-    && apt install -y --no-install-recommends xvfb wine64 xauth \
-    && apt remove -y wine64 libwine \
+    && apt install -y --no-install-recommends xvfb xauth \
     && rm -rf /var/lib/apt/lists/*
-COPY --from=build /wine /
-RUN ldconfig
 
 # XXX: otherwise things hang
 RUN winecfg
 
 # Copy over MSYS2
-COPY --from=build /tmp/msys64 /root/.wine/drive_c/msys64
+RUN cp -r /tmp/msys64 /root/.wine/drive_c/msys64
 
 # XXX: Signature validation is too slow, so disable it for now
 # To keep the impact of this change lower, we only allow the main mirror

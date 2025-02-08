@@ -15,7 +15,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
 
@@ -30,18 +30,18 @@ jobs:
       - name: Build build base image
         if: github.event_name != 'schedule'
         run: |
-          docker build --tag ghcr.io/msys2/msys2-docker-build-base:latest ./build-base
+          docker build --tag ghcr.io/wsxarcher/msys2-docker-build-base:latest ./build-base
 
       - name: Build images
         run: |
-          docker build --tag ghcr.io/msys2/msys2-docker-experimental:latest ./msys2
-          docker build --tag ghcr.io/msys2/msys2-docker-devcontainer:latest ./devcontainer
+          docker build --tag ghcr.io/wsxarcher/msys2-docker-experimental:latest ./msys2
+          docker build --tag ghcr.io/wsxarcher/msys2-docker-devcontainer:latest ./devcontainer
 
       - name: Save images
         if: github.event_name == 'pull_request'
         run: |
-          docker image save ghcr.io/msys2/msys2-docker-experimental:latest | zstd -T0 -c > experimental.tar.zst
-          docker image save ghcr.io/msys2/msys2-docker-devcontainer:latest | zstd -T0 -c > devcontainer.tar.zst
+          docker image save ghcr.io/wsxarcher/msys2-docker-experimental:latest | zstd -T0 -c > experimental.tar.zst
+          docker image save ghcr.io/wsxarcher/msys2-docker-devcontainer:latest | zstd -T0 -c > devcontainer.tar.zst
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -53,10 +53,10 @@ jobs:
       - name: Deploy build base image
         if: github.event_name != 'pull_request' && github.event_name != 'schedule'
         run: |
-          docker push ghcr.io/msys2/msys2-docker-build-base:latest
+          docker push ghcr.io/wsxarcher/msys2-docker-build-base:latest
 
       - name: Deploy images
         if: github.event_name != 'pull_request'
         run: |
-          docker push ghcr.io/msys2/msys2-docker-experimental:latest
-          docker push ghcr.io/msys2/msys2-docker-devcontainer:latest
+          docker push ghcr.io/wsxarcher/msys2-docker-experimental:latest
+          docker push ghcr.io/wsxarcher/msys2-docker-devcontainer:latest

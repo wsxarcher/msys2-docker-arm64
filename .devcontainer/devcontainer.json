@@ -1,5 +1,5 @@
 {
-    "image": "ghcr.io/msys2/msys2-docker-devcontainer",
+    "image": "ghcr.io/wsxarcher/msys2-docker-devcontainer",
     "customizations": {
         "vscode": {
             "settings": {
